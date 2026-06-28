@@ -1,0 +1,13 @@
+---
+# Main entry point — run with: ansible-playbook site.yml
+- name: Apply common baseline to all hosts
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Configure nginx on web servers
+  hosts: webservers
+  become: true
+  roles:
+    - nginx
