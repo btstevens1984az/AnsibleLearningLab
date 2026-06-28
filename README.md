@@ -14,6 +14,8 @@ xdg-open index.html
 
 Your progress (sections visited) is saved in browser localStorage.
 
+![Main Page](media/Main%20Page.png)
+
 ## What's Inside
 
 | Section | Topics |
