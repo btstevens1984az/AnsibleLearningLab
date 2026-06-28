@@ -16,6 +16,8 @@ Your progress (sections visited) is saved in browser localStorage.
 
 ![Main Page](media/Main%20Page.png)
 
+![Projects Tab](media/Projects%20Tab.png)
+
 ## What's Inside
 
 | Section | Topics |
