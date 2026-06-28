@@ -1,0 +1,8 @@
+---
+# Survey / extra vars from Controller:
+#   patch_category: security | bugfix | all | none
+#   reboot_after: true | false
+
+patch_category: all
+reboot_after: false
+reboot_timeout: 600

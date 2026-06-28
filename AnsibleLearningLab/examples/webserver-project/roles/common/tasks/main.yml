@@ -1,0 +1,24 @@
+---
+- name: Ensure common packages are installed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - vim
+    - htop
+    - curl
+    - git
+  tags: packages
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+  tags: timezone
+
+- name: Ensure chronyd is running
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: true
+  when: ansible_os_family == 'RedHat'
+  tags: ntp

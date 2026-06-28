@@ -1,0 +1,5 @@
+---
+# Job Template: "Patch Linux - Production"
+# Survey vars: patch_category, reboot_after
+# Workflow: can chain after "Pre-patch snapshot" job template
+- import_playbook: ../../patch-management/patch-servers.yml

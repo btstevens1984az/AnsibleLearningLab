@@ -1,0 +1,12 @@
+---
+# Job Template: "Deploy Nginx - Webservers"
+# Survey vars: nginx_port (integer), nginx_worker_processes (integer)
+- name: Deploy nginx to web tier
+  hosts: webservers
+  become: true
+  serial: 1
+  roles:
+    - role: nginx
+      vars:
+        nginx_port: "{{ nginx_port | default(80) | int }}"
+        nginx_worker_processes: "{{ nginx_worker_processes | default(4) | int }}"

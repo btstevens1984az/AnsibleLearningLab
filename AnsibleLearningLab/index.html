@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ansible Learning Lab — Complete Guide for IT Automation Engineers</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">A</div>
+      <div>
+        <h1>Ansible Learning Lab</h1>
+        <p>From zero to production automation</p>
+      </div>
+    </div>
+    <span class="header-badge">Local · No server required</span>
+  </div>
+</header>
+
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="search-box">
+      <input type="search" id="tab-search" placeholder="Search sections…" aria-label="Search sections">
+    </div>
+    <p id="progress-label" style="font-size:0.75rem;color:var(--text-muted);padding:0 1.5rem 0.5rem;"></p>
+    <div class="progress-bar" style="margin:0 1.5rem 1rem;"><div id="progress-fill" class="progress-fill" style="width:0%"></div></div>
+
+    <nav aria-label="Course sections">
+      <p class="nav-section-label">Foundations</p>
+      <ul class="tab-nav">
+        <li><button data-tab="overview" class="active" aria-selected="true"><span class="tab-icon">🏠</span> Overview</button></li>
+        <li><button data-tab="architecture" aria-selected="false"><span class="tab-icon">🏗</span> Architecture</button></li>
+        <li><button data-tab="install" aria-selected="false"><span class="tab-icon">⚙️</span> Installation</button></li>
+        <li><button data-tab="inventory" aria-selected="false"><span class="tab-icon">📋</span> Inventory</button></li>
+        <li><button data-tab="adhoc" aria-selected="false"><span class="tab-icon">⚡</span> Ad-Hoc Commands</button></li>
+      </ul>
+      <p class="nav-section-label">Core Automation</p>
+      <ul class="tab-nav">
+        <li><button data-tab="playbooks" aria-selected="false"><span class="tab-icon">📜</span> Playbooks</button></li>
+        <li><button data-tab="tasks-modules" aria-selected="false"><span class="tab-icon">🔧</span> Tasks &amp; Modules</button></li>
+        <li><button data-tab="variables" aria-selected="false"><span class="tab-icon">📦</span> Variables &amp; Facts</button></li>
+        <li><button data-tab="templates" aria-selected="false"><span class="tab-icon">📄</span> Templates &amp; Handlers</button></li>
+        <li><button data-tab="conditionals" aria-selected="false"><span class="tab-icon">🔀</span> Loops &amp; Conditionals</button></li>
+        <li><button data-tab="roles" aria-selected="false"><span class="tab-icon">🎭</span> Roles</button></li>
+      </ul>
+      <p class="nav-section-label">Production</p>
+      <ul class="tab-nav">
+        <li><button data-tab="vault" aria-selected="false"><span class="tab-icon">🔐</span> Ansible Vault</button></li>
+        <li><button data-tab="collections" aria-selected="false"><span class="tab-icon">📚</span> Collections</button></li>
+        <li><button data-tab="controller" aria-selected="false"><span class="tab-icon">🗼</span> Controller / AWX</button></li>
+        <li><button data-tab="execution" aria-selected="false"><span class="tab-icon">🚀</span> Execution Environments</button></li>
+        <li><button data-tab="best-practices" aria-selected="false"><span class="tab-icon">✅</span> Best Practices</button></li>
+      </ul>
+      <p class="nav-section-label">Reference</p>
+      <ul class="tab-nav">
+        <li><button data-tab="examples" aria-selected="false"><span class="tab-icon">💼</span> Example Projects</button></li>
+        <li><button data-tab="cheatsheet" aria-selected="false"><span class="tab-icon">📝</span> Cheat Sheet</button></li>
+        <li><button data-tab="resources" aria-selected="false"><span class="tab-icon">🔗</span> Resources &amp; Links</button></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- OVERVIEW -->
+    <section id="overview" class="tab-panel active">
+      <div class="panel-header">
+        <h2>Welcome to Ansible</h2>
+        <p>Your complete ground-up guide. Ansible is an agentless IT automation tool that uses SSH (Linux) or WinRM (Windows) to configure systems, deploy apps, and orchestrate workflows — all from simple YAML files.</p>
+      </div>
+
+      <div class="card">
+        <h3>What Ansible Does</h3>
+        <div class="grid-3">
+          <div>
+            <strong>Configuration Management</strong>
+            <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:0.35rem;">Enforce desired state on servers — packages, services, files, users.</p>
+          </div>
+          <div>
+            <strong>Application Deployment</strong>
+            <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:0.35rem;">Deploy code, restart services, run migrations in a repeatable way.</p>
+          </div>
+          <div>
+            <strong>Orchestration</strong>
+            <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:0.35rem;">Coordinate multi-step workflows across many hosts in order.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <strong>Key Principle — Idempotency</strong>
+        Ansible tasks should be safe to run repeatedly. If a web server is already installed and configured correctly, re-running the playbook should report <code>ok</code> (no change), not break anything. This is the foundation of reliable automation.
+      </div>
+
+      <div class="card">
+        <h3>Core Terminology</h3>
+        <table>
+          <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Control Node</strong></td><td>The machine where Ansible is installed and from which you run commands (your laptop, a CI runner, or Ansible Controller).</td></tr>
+            <tr><td><strong>Managed Node / Host</strong></td><td>Any machine Ansible configures remotely. No Ansible agent required on managed nodes.</td></tr>
+            <tr><td><strong>Inventory</strong></td><td>The list of hosts and groups Ansible targets.</td></tr>
+            <tr><td><strong>Playbook</strong></td><td>A YAML file defining automation workflows (plays → tasks).</td></tr>
+            <tr><td><strong>Module</strong></td><td>A unit of work Ansible executes (e.g., <code>copy</code>, <code>yum</code>, <code>service</code>).</td></tr>
+            <tr><td><strong>Task</strong></td><td>A single module invocation inside a playbook.</td></tr>
+            <tr><td><strong>Role</strong></td><td>A reusable bundle of tasks, templates, variables, and handlers.</td></tr>
+            <tr><td><strong>Fact</strong></td><td>Discovered information about a host (OS, IP, memory) gathered automatically.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Recommended Learning Path</h3>
+        <ol class="steps">
+          <li><strong>Architecture &amp; Install</strong> — Understand agentless SSH/WinRM and set up your control node.</li>
+          <li><strong>Inventory &amp; Ad-Hoc</strong> — Target hosts and run one-off commands before writing playbooks.</li>
+          <li><strong>Playbooks → Tasks → Variables</strong> — Build real automation in YAML.</li>
+          <li><strong>Templates, Handlers, Roles</strong> — Structure reusable, production-grade content.</li>
+          <li><strong>Vault &amp; Collections</strong> — Secure secrets and use community/vendor modules.</li>
+          <li><strong>Controller / AWX</strong> — Scale with RBAC, scheduling, and job templates.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section id="architecture" class="tab-panel">
+      <div class="panel-header">
+        <h2>Architecture</h2>
+        <p>Ansible is agentless. The control node pushes modules over the network; managed nodes execute them and return JSON results.</p>
+      </div>
+
+      <div class="diagram">┌─────────────────────────────────────────────────────────────────┐
+│                     ANSIBLE CONTROL NODE                          │
+│  (your laptop · CI/CD · Ansible Automation Platform / Controller) │
+│                                                                   │
+│   ansible-playbook site.yml  ──►  Inventory  +  Playbooks/Roles   │
+└───────────────────────────────┬───────────────────────────────────┘
+                                │
+            ┌───────────────────┼───────────────────┐
+            │ SSH (port 22)     │ WinRM (5985/5986) │
+            ▼                   ▼                   ▼
+     ┌────────────┐      ┌────────────┐      ┌────────────┐
+     │ Linux Host │      │ Linux Host │      │ Windows    │
+     │ (managed)  │      │ (managed)  │      │ (managed)  │
+     │ No agent!  │      │ No agent!  │      │ No agent!  │
+     └────────────┘      └────────────┘      └────────────┘</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>How a Task Runs</h3>
+          <ol style="padding-left:1.25rem;color:var(--text-secondary);font-size:0.9rem;">
+            <li>Ansible connects to the host via SSH/WinRM.</li>
+            <li>It copies a Python module (or PowerShell script on Windows) to a temp directory.</li>
+            <li>The module executes locally on the managed node.</li>
+            <li>Results (changed/ok/failed + output) return as JSON to the control node.</li>
+            <li>Temp files are cleaned up.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>Ansible Automation Platform Stack</h3>
+          <table>
+            <tbody>
+              <tr><td><strong>ansible-core</strong></td><td>Open-source engine (CLI tools)</td></tr>
+              <tr><td><strong>Collections</strong></td><td>Packaged modules, roles, plugins</td></tr>
+              <tr><td><strong>AWX</strong></td><td>Upstream open-source web UI/API</td></tr>
+              <tr><td><strong>Automation Controller</strong></td><td>Red Hat supported enterprise UI (formerly Tower)</td></tr>
+              <tr><td><strong>Automation Hub</strong></td><td>Private artifact registry for collections/EEs</td></tr>
+              <tr><td><strong>Execution Environment</strong></td><td>Container image with ansible-core + collections</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="concept-box info">
+        <strong>Python Requirement</strong>
+        Managed Linux nodes need Python installed (2.7 minimum, 3.5+ recommended). Most modern distros include it. Windows uses PowerShell — no Python required on the target.
+      </div>
+    </section>
+
+    <!-- INSTALL -->
+    <section id="install" class="tab-panel">
+      <div class="panel-header">
+        <h2>Installation &amp; Setup</h2>
+        <p>Install Ansible on a control node only. Never install the full Ansible package on managed nodes.</p>
+      </div>
+
+      <div class="card">
+        <h3>Install ansible-core (Recommended)</h3>
+        <div class="code-block">
+          <button class="copy-btn" aria-label="Copy">Copy</button>
+          <pre><span class="cmt"># macOS (Homebrew)</span>
+brew install ansible
+
+<span class="cmt"># RHEL / Fedora</span>
+sudo dnf install ansible-core
+
+<span class="cmt"># Ubuntu / Debian</span>
+sudo apt update && sudo apt install ansible
+
+<span class="cmt"># Python pip (any OS — use a venv)</span>
+python3 -m venv ~/ansible-venv
+source ~/ansible-venv/bin/activate
+pip install ansible-core ansible-lint</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Verify Installation</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre>ansible --version
+ansible-doc -l | head          <span class="cmt"># list available modules</span>
+ansible localhost -m ping      <span class="cmt"># test against yourself</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Configure ansible.cfg</h3>
+        <p style="color:var(--text-secondary);margin-bottom:0.75rem;">Place in project root, <code>~/.ansible.cfg</code>, or <code>/etc/ansible/ansible.cfg</code>. Project-level config is best for teams.</p>
+        <div class="code-block">
+          <span class="code-label">ansible.cfg</span>
+          <button class="copy-btn">Copy</button>
+          <pre>[defaults]
+inventory = inventories/production/hosts.yml
+remote_user = ansible
+private_key_file = ~/.ssh/ansible_deploy_key
+host_key_checking = False          <span class="cmt"># True in production with known_hosts</span>
+retry_files_enabled = False
+stdout_callback = yaml               <span class="cmt"># or ansible.builtin.default</span>
+interpreter_python = auto_silent
+gathering = smart
+fact_caching = jsonfile
+fact_caching_connection = /tmp/ansible_facts
+fact_caching_timeout = 86400
+
+[privilege_escalation]
+become = True
+become_method = sudo
+become_user = root
+become_ask_pass = False
+
+[ssh_connection]
+pipelining = True
+ssh_args = -o ControlMaster=auto -o ControlPersist=60s</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>SSH Key Setup for Linux Targets</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># On control node — generate a dedicated deploy key</span>
+ssh-keygen -t ed25519 -f ~/.ssh/ansible_deploy_key -C "ansible-control"
+
+<span class="cmt"># Copy public key to managed node (or use ssh-copy-id)</span>
+ssh-copy-id -i ~/.ssh/ansible_deploy_key.pub ansible@web01.example.com
+
+<span class="cmt"># On managed node — grant passwordless sudo to ansible user</span>
+<span class="cmt"># /etc/sudoers.d/ansible:</span>
+ansible ALL=(ALL) NOPASSWD: ALL</pre>
+        </div>
+      </div>
+
+      <div class="concept-box warning">
+        <strong>Windows WinRM Setup</strong>
+        Windows hosts require WinRM configured with HTTPS (5986) and a certificate. Use the <code>ansible.windows</code> collection. See the <a href="https://docs.ansible.com/ansible/latest/os_guide/windows_setup.html" target="_blank" rel="noopener">Windows Setup Guide</a> for the full bootstrap process including <code>ConfigureRemotingForAnsible.ps1</code>.
+      </div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section id="inventory" class="tab-panel">
+      <div class="panel-header">
+        <h2>Inventory</h2>
+        <p>The inventory defines which hosts Ansible manages, organized into groups with variables attached at every level.</p>
+      </div>
+
+      <div class="card">
+        <h3>INI Format (Classic)</h3>
+        <div class="code-block">
+          <span class="code-label">inventories/production/hosts.ini</span>
+          <button class="copy-btn">Copy</button>
+          <pre>[webservers]
+web01.example.com ansible_host=10.0.1.10
+web02.example.com ansible_host=10.0.1.11
+
+[dbservers]
+db01.example.com ansible_host=10.0.2.10
+
+[linux:children]
+webservers
+dbservers
+
+[production:children]
+linux
+
+[webservers:vars]
+ansible_user=ansible
+nginx_worker_processes=4</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>YAML Format (Recommended)</h3>
+        <div class="code-block">
+          <span class="code-label">inventories/production/hosts.yml</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="key">all</span>:
+  <span class="key">children</span>:
+    <span class="key">production</span>:
+      <span class="key">children</span>:
+        <span class="key">webservers</span>:
+          <span class="key">hosts</span>:
+            <span class="key">web01.example.com</span>:
+              <span class="key">ansible_host</span>: <span class="val">10.0.1.10</span>
+            <span class="key">web02.example.com</span>:
+              <span class="key">ansible_host</span>: <span class="val">10.0.1.11</span>
+        <span class="key">dbservers</span>:
+          <span class="key">hosts</span>:
+            <span class="key">db01.example.com</span>:
+              <span class="key">ansible_host</span>: <span class="val">10.0.2.10</span>
+      <span class="key">vars</span>:
+        <span class="key">ansible_user</span>: <span class="val">ansible</span>
+        <span class="key">env</span>: <span class="val">production</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Variable Precedence (Low → High)</h3>
+        <table>
+          <thead><tr><th>Priority</th><th>Source</th></tr></thead>
+          <tbody>
+            <tr><td>1 (lowest)</td><td><code>group_vars/all</code></td></tr>
+            <tr><td>2</td><td><code>group_vars/&lt;group&gt;</code></td></tr>
+            <tr><td>3</td><td><code>host_vars/&lt;hostname&gt;</code></td></tr>
+            <tr><td>4</td><td>Inventory group/host vars</td></tr>
+            <tr><td>5</td><td>Play vars / include_vars</td></tr>
+            <tr><td>6</td><td>Task vars / block vars</td></tr>
+            <tr><td>7</td><td><code>set_fact</code> / registered vars</td></tr>
+            <tr><td>8</td><td>Command-line extra vars (<code>-e</code>)</td></tr>
+            <tr><td>9 (highest)</td><td><code>-e @file</code> / role params</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Dynamic Inventory</h3>
+        <p style="color:var(--text-secondary);margin-bottom:0.75rem;">For cloud VMs (AWS, Azure, VMware), use inventory plugins instead of static files.</p>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># inventories/aws/aws_ec2.yml</span>
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+filters:
+  tag:Environment: production
+keyed_groups:
+  - key: tags.Role
+    prefix: role
+hostnames:
+  - tag:Name</pre>
+        </div>
+        <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-secondary);">Run: <code>ansible-inventory -i inventories/aws/ --graph</code></p>
+      </div>
+
+      <div class="concept-box success">
+        <strong>See Also</strong>
+        Full working inventory in <code>examples/webserver-project/inventories/</code> — open the Example Projects tab.
+      </div>
+    </section>
+
+    <!-- AD-HOC -->
+    <section id="adhoc" class="tab-panel">
+      <div class="panel-header">
+        <h2>Ad-Hoc Commands</h2>
+        <p>One-off commands for quick tasks, troubleshooting, and learning modules before committing to playbooks.</p>
+      </div>
+
+      <div class="card">
+        <h3>Syntax</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre>ansible &lt;pattern&gt; -m &lt;module&gt; -a "&lt;module_args&gt;" [options]</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Essential Ad-Hoc Examples</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># Ping all hosts in inventory</span>
+ansible all -m ping
+
+<span class="cmt"># Run a shell command on webservers group</span>
+ansible webservers -m ansible.builtin.command -a "uptime"
+
+<span class="cmt"># Install package (become root)</span>
+ansible webservers -m ansible.builtin.dnf -a "name=nginx state=present" -b
+
+<span class="cmt"># Copy a file</span>
+ansible webservers -m ansible.builtin.copy -a "src=./index.html dest=/var/www/html/ owner=nginx" -b
+
+<span class="cmt"># Gather facts and print hostname</span>
+ansible web01.example.com -m ansible.builtin.setup -a "filter=ansible_hostname"
+
+<span class="cmt"># Reboot hosts (with 300s timeout)</span>
+ansible all -m ansible.builtin.reboot -a "reboot_timeout=300" -b
+
+<span class="cmt"># Limit to one host, check mode (dry run)</span>
+ansible webservers -m ansible.builtin.dnf -a "name=nginx state=present" -b --limit web01 --check</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Common CLI Flags</h3>
+        <table>
+          <thead><tr><th>Flag</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>-i INVENTORY</code></td><td>Specify inventory file or directory</td></tr>
+            <tr><td><code>-m MODULE</code></td><td>Module to run (default: command)</td></tr>
+            <tr><td><code>-a "ARGS"</code></td><td>Module arguments</td></tr>
+            <tr><td><code>-b / --become</code></td><td>Privilege escalation (sudo)</td></tr>
+            <tr><td><code>-K</code></td><td>Prompt for become password</td></tr>
+            <tr><td><code>-u USER</code></td><td>Remote user</td></tr>
+            <tr><td><code>-k</code></td><td>Prompt for SSH password</td></tr>
+            <tr><td><code>-l / --limit</code></td><td>Restrict to host pattern</td></tr>
+            <tr><td><code>-C / --check</code></td><td>Dry run (check mode)</td></tr>
+            <tr><td><code>-D / --diff</code></td><td>Show file diffs</td></tr>
+            <tr><td><code>-v</code></td><td>Verbose (-vvv for connection debug)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PLAYBOOKS -->
+    <section id="playbooks" class="tab-panel">
+      <div class="panel-header">
+        <h2>Playbooks</h2>
+        <p>Playbooks are YAML files that define ordered automation. A playbook contains one or more <em>plays</em>; each play targets a host group and runs a list of <em>tasks</em>.</p>
+      </div>
+
+      <div class="diagram">playbook.yml
+ └── play (targets: webservers, become: true)
+      ├── task 1: install nginx
+      ├── task 2: copy config template
+      ├── task 3: enable service
+      └── handler: restart nginx (notified by task 2)</div>
+
+      <div class="card">
+        <h3>Minimal Playbook</h3>
+        <div class="code-block">
+          <span class="code-label">site.yml</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt">---</span>
+<span class="kw">- name</span>: <span class="val">Configure web servers</span>
+  <span class="kw">hosts</span>: <span class="val">webservers</span>
+  <span class="kw">become</span>: <span class="val">true</span>
+  <span class="kw">gather_facts</span>: <span class="val">true</span>
+
+  <span class="kw">vars</span>:
+    <span class="key">nginx_port</span>: <span class="val">80</span>
+
+  <span class="kw">tasks</span>:
+    <span class="kw">- name</span>: <span class="val">Ensure nginx is installed</span>
+      <span class="kw">ansible.builtin.package</span>:
+        <span class="key">name</span>: <span class="val">nginx</span>
+        <span class="key">state</span>: <span class="val">present</span>
+
+    <span class="kw">- name</span>: <span class="val">Ensure nginx is running and enabled</span>
+      <span class="kw">ansible.builtin.service</span>:
+        <span class="key">name</span>: <span class="val">nginx</span>
+        <span class="key">state</span>: <span class="val">started</span>
+        <span class="key">enabled</span>: <span class="val">true</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Running Playbooks</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre>ansible-playbook site.yml
+ansible-playbook site.yml --limit web01.example.com
+ansible-playbook site.yml --tags nginx --skip-tags backup
+ansible-playbook site.yml --check --diff          <span class="cmt"># dry run with diffs</span>
+ansible-playbook site.yml -e "nginx_port=8080"    <span class="cmt"># extra vars</span>
+ansible-playbook site.yml --start-at-task "Ensure nginx is installed"</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Playbook with Roles</h3>
+        <div class="code-block">
+          <span class="code-label">site.yml (production pattern)</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt">---</span>
+<span class="kw">- name</span>: <span class="val">Apply common baseline to all hosts</span>
+  <span class="kw">hosts</span>: <span class="val">all</span>
+  <span class="kw">become</span>: <span class="val">true</span>
+  <span class="kw">roles</span>:
+    <span class="val">- common</span>
+
+<span class="kw">- name</span>: <span class="val">Configure web tier</span>
+  <span class="kw">hosts</span>: <span class="val">webservers</span>
+  <span class="kw">become</span>: <span class="val">true</span>
+  <span class="kw">roles</span>:
+    <span class="val">- nginx</span>
+  <span class="kw">vars</span>:
+    <span class="key">nginx_worker_processes</span>: <span class="val">4</span></pre>
+        </div>
+      </div>
+
+      <div class="concept-box">
+        <strong>YAML Rules</strong>
+        Use spaces not tabs. Start files with <code>---</code>. Quote strings containing colons. Task names are mandatory in production — they appear in logs and Controller job output.
+      </div>
+    </section>
+
+    <!-- TASKS & MODULES -->
+    <section id="tasks-modules" class="tab-panel">
+      <div class="panel-header">
+        <h2>Tasks &amp; Modules</h2>
+        <p>Modules are the tools Ansible uses to perform work. Always prefer modules over raw shell commands — modules are idempotent and return structured JSON.</p>
+      </div>
+
+      <div class="card">
+        <h3>Module Categories</h3>
+        <table>
+          <thead><tr><th>Category</th><th>Examples</th><th>Collection</th></tr></thead>
+          <tbody>
+            <tr><td>System</td><td><code>user</code>, <code>group</code>, <code>service</code>, <code>reboot</code></td><td>ansible.builtin</td></tr>
+            <tr><td>Package</td><td><code>package</code>, <code>dnf</code>, <code>apt</code>, <code>yum</code></td><td>ansible.builtin</td></tr>
+            <tr><td>Files</td><td><code>copy</code>, <code>file</code>, <code>template</code>, <code>lineinfile</code></td><td>ansible.builtin</td></tr>
+            <tr><td>Commands</td><td><code>command</code>, <code>shell</code>, <code>script</code></td><td>ansible.builtin</td></tr>
+            <tr><td>Cloud</td><td><code>ec2_instance</code>, <code>azure_rm_virtualmachine</code></td><td>amazon.aws, azure.azcollection</td></tr>
+            <tr><td>Network</td><td><code>ios_config</code>, <code>nxos_config</code></td><td>cisco.ios, cisco.nxos</td></tr>
+            <tr><td>Windows</td><td><code>win_service</code>, <code>win_feature</code></td><td>ansible.windows</td></tr>
+            <tr><td>Containers</td><td><code>docker_container</code>, <code>k8s</code></td><td>community.docker, kubernetes.core</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Task Anatomy</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="kw">- name</span>: <span class="val">Create application directory</span>    <span class="cmt"># Human-readable (required)</span>
+  <span class="kw">ansible.builtin.file</span>:                    <span class="cmt"># FQCN module name</span>
+    <span class="key">path</span>: <span class="val">/opt/myapp</span>
+    <span class="key">state</span>: <span class="val">directory</span>
+    <span class="key">owner</span>: <span class="val">appuser</span>
+    <span class="key">group</span>: <span class="val">appuser</span>
+    <span class="key">mode</span>: <span class="val">'0755'</span>
+  <span class="kw">tags</span>: [<span class="val">app</span>, <span class="val">directories</span>]
+  <span class="kw">when</span>: <span class="val">deploy_app | bool</span>
+  <span class="kw">register</span>: <span class="val">app_dir_result</span>
+  <span class="kw">notify</span>: <span class="val">Restart application</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>command vs shell vs raw</h3>
+        <div class="grid-2">
+          <div>
+            <p><strong>command</strong> — No shell features (no pipes, redirects). Safer default.</p>
+            <div class="code-block"><pre>- ansible.builtin.command:
+    cmd: /usr/bin/uptime</pre></div>
+          </div>
+          <div>
+            <p><strong>shell</strong> — Full shell. Use when you need pipes or redirects.</p>
+            <div class="code-block"><pre>- ansible.builtin.shell:
+    cmd: "cat /var/log/app.log | grep ERROR"</pre></div>
+          </div>
+        </div>
+        <div class="concept-box warning">
+          <strong>Prefer modules</strong>
+          Instead of <code>shell: yum install nginx</code>, use <code>dnf: name=nginx state=present</code>. The module knows if nginx is already installed.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>changed_when &amp; failed_when</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="kw">- name</span>: <span class="val">Run health check script</span>
+  <span class="kw">ansible.builtin.command</span>: <span class="val">/opt/scripts/healthcheck.sh</span>
+  <span class="kw">register</span>: <span class="val">health_result</span>
+  <span class="kw">changed_when</span>: <span class="val">false</span>           <span class="cmt"># read-only command, never "changed"</span>
+  <span class="kw">failed_when</span>: <span class="val">health_result.rc != 0</span>
+
+<span class="kw">- name</span>: <span class="val">Run migration (only changed if output contains MIGRATED)</span>
+  <span class="kw">ansible.builtin.command</span>: <span class="val">/opt/app/migrate.sh</span>
+  <span class="kw">register</span>: <span class="val">migrate_result</span>
+  <span class="kw">changed_when</span>: <span class="val">"'MIGRATED' in migrate_result.stdout"</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Blocks — Error Handling</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="kw">- name</span>: <span class="val">Deploy with rollback on failure</span>
+  <span class="kw">block</span>:
+    <span class="kw">- name</span>: <span class="val">Copy new release</span>
+      <span class="kw">ansible.builtin.copy</span>:
+        <span class="key">src</span>: <span class="val">releases/v2/</span>
+        <span class="key">dest</span>: <span class="val">/opt/app/</span>
+    <span class="kw">- name</span>: <span class="val">Run smoke test</span>
+      <span class="kw">ansible.builtin.uri</span>:
+        <span class="key">url</span>: <span class="val">http://localhost/health</span>
+        <span class="key">status_code</span>: <span class="val">200</span>
+  <span class="kw">rescue</span>:
+    <span class="kw">- name</span>: <span class="val">Rollback to previous release</span>
+      <span class="kw">ansible.builtin.command</span>: <span class="val">/opt/scripts/rollback.sh</span>
+  <span class="kw">always</span>:
+    <span class="kw">- name</span>: <span class="val">Log deployment attempt</span>
+      <span class="kw">ansible.builtin.lineinfile</span>:
+        <span class="key">path</span>: <span class="val">/var/log/deployments.log</span>
+        <span class="key">line</span>: <span class="val">"{{ ansible_date_time.iso8601 }} deploy on {{ inventory_hostname }}"</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- VARIABLES -->
+    <section id="variables" class="tab-panel">
+      <div class="panel-header">
+        <h2>Variables &amp; Facts</h2>
+        <p>Variables parameterize your automation. Facts are auto-discovered variables about each host.</p>
+      </div>
+
+      <div class="card">
+        <h3>Defining Variables</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># group_vars/webservers/main.yml</span>
+nginx_port: 80
+nginx_worker_processes: "{{ ansible_processor_vcpus | default(2) }}"
+app_version: "2.4.1"
+
+<span class="cmt"># host_vars/web01.example.com/main.yml</span>
+nginx_worker_processes: 8   <span class="cmt"># overrides group var for this host</span>
+
+<span class="cmt"># In playbook</span>
+vars:
+  deploy_env: production
+
+<span class="cmt"># Command line (highest precedence)</span>
+ansible-playbook site.yml -e "app_version=2.5.0"</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Jinja2 Templating</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt">{{ variable }}                    # output value</span>
+<span class="cmt">{{ variable | default('fallback') }}  # with default</span>
+<span class="cmt">{{ list | join(',') }}              # filter</span>
+<span class="cmt">{% if env == 'production' %}...{% endif %}  # conditionals</span>
+<span class="cmt">{% for host in groups['webservers'] %}...{% endfor %}  # loops</span>
+
+<span class="cmt"># Useful filters for automation engineers</span>
+{{ my_var | b64encode }}
+{{ vault_password | password_hash('sha512') }}
+{{ config_file | basename }}
+{{ ip_list | select('match', '^10\\.') | list }}</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Common Facts</h3>
+        <table>
+          <thead><tr><th>Fact</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>ansible_hostname</code></td><td>Short hostname</td></tr>
+            <tr><td><code>ansible_fqdn</code></td><td>Fully qualified domain name</td></tr>
+            <tr><td><code>ansible_os_family</code></td><td>RedHat, Debian, Windows, etc.</td></tr>
+            <tr><td><code>ansible_distribution</code></td><td>CentOS, Ubuntu, Rocky, etc.</td></tr>
+            <tr><td><code>ansible_distribution_version</code></td><td>OS version</td></tr>
+            <tr><td><code>ansible_default_ipv4.address</code></td><td>Primary IPv4</td></tr>
+            <tr><td><code>ansible_memtotal_mb</code></td><td>Total RAM</td></tr>
+            <tr><td><code>ansible_processor_vcpus</code></td><td>vCPU count</td></tr>
+            <tr><td><code>inventory_hostname</code></td><td>Name from inventory (magic var)</td></tr>
+            <tr><td><code>groups['webservers']</code></td><td>List of hosts in group (magic var)</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-secondary);">View all facts: <code>ansible web01 -m setup</code> or <code>ansible web01 -m ansible.builtin.debug -a "var=hostvars[inventory_hostname]"</code></p>
+      </div>
+
+      <div class="card">
+        <h3>register &amp; set_fact</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="kw">- name</span>: <span class="val">Check disk space</span>
+  <span class="kw">ansible.builtin.command</span>: <span class="val">df -h /</span>
+  <span class="kw">register</span>: <span class="val">disk_check</span>
+
+<span class="kw">- name</span>: <span class="val">Show disk output</span>
+  <span class="kw">ansible.builtin.debug</span>:
+    <span class="key">msg</span>: <span class="val">"{{ disk_check.stdout }}"</span>
+
+<span class="kw">- name</span>: <span class="val">Set computed variable for later tasks</span>
+  <span class="kw">ansible.builtin.set_fact</span>:
+    <span class="key">needs_cleanup</span>: <span class="val">"{{ disk_check.stdout is search('[8-9][0-9]%') }}"</span>
+    <span class="key">cacheable</span>: <span class="val">true</span>   <span class="cmt"># persist in fact cache</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEMPLATES -->
+    <section id="templates" class="tab-panel">
+      <div class="panel-header">
+        <h2>Templates &amp; Handlers</h2>
+        <p>Templates render Jinja2 files on the control node and push the result to managed nodes. Handlers restart services only when notified by a changed task.</p>
+      </div>
+
+      <div class="card">
+        <h3>Template Example</h3>
+        <div class="code-block">
+          <span class="code-label">roles/nginx/templates/nginx.conf.j2</span>
+          <button class="copy-btn">Copy</button>
+          <pre>user nginx;
+worker_processes {{ nginx_worker_processes }};
+error_log /var/log/nginx/error.log;
+
+events {
+    worker_connections {{ nginx_worker_connections | default(1024) }};
+}
+
+http {
+    server {
+        listen {{ nginx_port }};
+        server_name {{ ansible_fqdn }};
+        root /var/www/html;
+    }
+}</pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">Task using template</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="kw">- name</span>: <span class="val">Deploy nginx configuration</span>
+  <span class="kw">ansible.builtin.template</span>:
+    <span class="key">src</span>: <span class="val">nginx.conf.j2</span>
+    <span class="key">dest</span>: <span class="val">/etc/nginx/nginx.conf</span>
+    <span class="key">owner</span>: <span class="val">root</span>
+    <span class="key">group</span>: <span class="val">root</span>
+    <span class="key">mode</span>: <span class="val">'0644'</span>
+    <span class="key">validate</span>: <span class="val">nginx -t -c %s</span>   <span class="cmt"># test before applying</span>
+  <span class="kw">notify</span>: <span class="val">Restart nginx</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Handlers</h3>
+        <p style="color:var(--text-secondary);margin-bottom:0.75rem;">Handlers run at the end of the play, only once, and only if notified. Multiple tasks can notify the same handler — it runs once.</p>
+        <div class="code-block">
+          <span class="code-label">roles/nginx/handlers/main.yml</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt">---</span>
+<span class="kw">- name</span>: <span class="val">Restart nginx</span>
+  <span class="kw">ansible.builtin.service</span>:
+    <span class="key">name</span>: <span class="val">nginx</span>
+    <span class="key">state</span>: <span class="val">restarted</span>
+
+<span class="kw">- name</span>: <span class="val">Reload nginx</span>
+  <span class="kw">ansible.builtin.service</span>:
+    <span class="key">name</span>: <span class="val">nginx</span>
+    <span class="key">state</span>: <span class="val">reloaded</span></pre>
+        </div>
+        <div class="concept-box info">
+          <strong>listen — Handler Chains</strong>
+          Handlers can <code>listen: "refresh web services"</code> and tasks can <code>notify: "refresh web services"</code> to trigger multiple handlers with one notification.
+        </div>
+      </div>
+    </section>
+
+    <!-- CONDITIONALS -->
+    <section id="conditionals" class="tab-panel">
+      <div class="panel-header">
+        <h2>Loops &amp; Conditionals</h2>
+        <p>Control flow in Ansible uses Jinja2 expressions — no traditional programming loops outside of Jinja.</p>
+      </div>
+
+      <div class="card">
+        <h3>when — Conditionals</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="kw">- name</span>: <span class="val">Install nginx on RedHat family</span>
+  <span class="kw">ansible.builtin.dnf</span>:
+    <span class="key">name</span>: <span class="val">nginx</span>
+    <span class="key">state</span>: <span class="val">present</span>
+  <span class="kw">when</span>: <span class="val">ansible_os_family == 'RedHat'</span>
+
+<span class="kw">- name</span>: <span class="val">Install nginx on Debian family</span>
+  <span class="kw">ansible.builtin.apt</span>:
+    <span class="key">name</span>: <span class="val">nginx</span>
+    <span class="key">state</span>: <span class="val">present</span>
+  <span class="kw">when</span>: <span class="val">ansible_os_family == 'Debian'</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>loop — Iterate Lists</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="kw">- name</span>: <span class="val">Ensure required packages are installed</span>
+  <span class="kw">ansible.builtin.package</span>:
+    <span class="key">name</span>: <span class="val">"{{ item }}"</span>
+    <span class="key">state</span>: <span class="val">present</span>
+  <span class="kw">loop</span>:
+    <span class="val">- vim</span>
+    <span class="val">- htop</span>
+    <span class="val">- curl</span>
+    <span class="val">- git</span>
+
+<span class="kw">- name</span>: <span class="val">Create application users</span>
+  <span class="kw">ansible.builtin.user</span>:
+    <span class="key">name</span>: <span class="val">"{{ item.name }}"</span>
+    <span class="key">groups</span>: <span class="val">"{{ item.groups }}"</span>
+    <span class="key">shell</span>: <span class="val">/bin/bash</span>
+  <span class="kw">loop</span>:
+    <span class="val">- { name: 'appuser', groups: 'wheel' }</span>
+    <span class="val">- { name: 'deploy', groups: 'docker' }</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>loop vs with_* (Legacy)</h3>
+        <p style="color:var(--text-secondary);">Modern Ansible uses <code>loop</code>. Legacy forms like <code>with_items</code>, <code>with_dict</code> still work but prefer <code>loop</code> + filters.</p>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># Loop over dictionary</span>
+<span class="kw">- name</span>: <span class="val">Set sysctl values</span>
+  <span class="kw">ansible.posix.sysctl</span>:
+    <span class="key">name</span>: <span class="val">"{{ item.key }}"</span>
+    <span class="key">value</span>: <span class="val">"{{ item.value }}"</span>
+  <span class="kw">loop</span>: <span class="val">"{{ sysctl_settings | dict2items }}"</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROLES -->
+    <section id="roles" class="tab-panel">
+      <div class="panel-header">
+        <h2>Roles</h2>
+        <p>Roles package related tasks, defaults, vars, templates, handlers, and files into a reusable unit — the standard way to organize production Ansible.</p>
+      </div>
+
+      <div class="file-tree">
+<span class="dir">roles/nginx/</span>
+├── <span class="dir">defaults/</span>     <span class="cmt"># lowest precedence vars (overridable)</span>
+│   └── <span class="file">main.yml</span>
+├── <span class="dir">vars/</span>         <span class="cmt"># role-internal vars (higher precedence)</span>
+│   └── <span class="file">main.yml</span>
+├── <span class="dir">tasks/</span>
+│   └── <span class="file highlight">main.yml</span>   <span class="cmt"># entry point</span>
+├── <span class="dir">handlers/</span>
+│   └── <span class="file">main.yml</span>
+├── <span class="dir">templates/</span>
+│   └── <span class="file">nginx.conf.j2</span>
+├── <span class="dir">files/</span>        <span class="cmt"># static files for copy module</span>
+├── <span class="dir">meta/</span>
+│   └── <span class="file">main.yml</span>   <span class="cmt"># role dependencies</span>
+└── <span class="dir">README.md</span>
+      </div>
+
+      <div class="card">
+        <h3>Creating a Role</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre>ansible-galaxy role init nginx
+ansible-galaxy role init common --init-path roles/</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Role Dependencies (meta/main.yml)</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># roles/nginx/meta/main.yml</span>
+<span class="key">dependencies</span>:
+  <span class="key">- role</span>: <span class="val">common</span>
+  <span class="key">- role</span>: <span class="val">firewall</span>
+    <span class="key">vars</span>:
+      <span class="key">open_ports</span>:
+        <span class="val">- 80</span>
+        <span class="val">- 443</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Galaxy &amp; requirements.yml</h3>
+        <div class="code-block">
+          <span class="code-label">requirements.yml</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="key">roles</span>:
+  <span class="key">- name</span>: <span class="val">geerlingguy.security</span>
+    <span class="key">version</span>: <span class="val">2.2.0</span>
+  <span class="key">- src</span>: <span class="val">https://github.com/myorg/custom-role.git</span>
+    <span class="key">name</span>: <span class="val">custom-role</span>
+    <span class="key">scm</span>: <span class="val">git</span>
+    <span class="key">version</span>: <span class="val">main</span>
+
+<span class="key">collections</span>:
+  <span class="key">- name</span>: <span class="val">community.general</span>
+  <span class="key">- name</span>: <span class="val">ansible.posix</span></pre>
+        </div>
+        <p style="margin-top:0.75rem;font-size:0.9rem;color:var(--text-secondary);"><code>ansible-galaxy install -r requirements.yml</code></p>
+      </div>
+    </section>
+
+    <!-- VAULT -->
+    <section id="vault" class="tab-panel">
+      <div class="panel-header">
+        <h2>Ansible Vault</h2>
+        <p>Encrypt sensitive data (passwords, API keys, certificates) at rest in your Git repository.</p>
+      </div>
+
+      <div class="card">
+        <h3>Vault Commands</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># Create encrypted file</span>
+ansible-vault create group_vars/all/vault.yml
+
+<span class="cmt"># Encrypt existing file</span>
+ansible-vault encrypt group_vars/all/secrets.yml
+
+<span class="cmt"># Edit encrypted file in place</span>
+ansible-vault edit group_vars/all/vault.yml
+
+<span class="cmt"># Run playbook with vault</span>
+ansible-playbook site.yml --ask-vault-pass
+ansible-playbook site.yml --vault-password-file ~/.vault_pass
+
+<span class="cmt"># Encrypt a single string</span>
+ansible-vault encrypt_string 'SuperSecretP@ss' --name 'db_password'</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Using Vault Variables</h3>
+        <div class="code-block">
+          <span class="code-label">group_vars/all/vault.yml (encrypted)</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="key">vault_db_password</span>: <span class="val">SuperSecretP@ss</span>
+<span class="key">vault_api_token</span>: <span class="val">abc123xyz</span></pre>
+        </div>
+        <div class="code-block">
+          <span class="code-label">group_vars/all/main.yml (plain text references)</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># Never put secrets in plain text — reference vault_* vars</span>
+db_password: "{{ vault_db_password }}"
+api_token: "{{ vault_api_token }}"</pre>
+        </div>
+      </div>
+
+      <div class="concept-box warning">
+        <strong>Controller Integration</strong>
+        In Ansible Automation Platform, store vault credentials as <strong>Credential Types → Vault</strong> and attach them to Job Templates. Never commit <code>.vault_pass</code> files to Git.
+      </div>
+    </section>
+
+    <!-- COLLECTIONS -->
+    <section id="collections" class="tab-panel">
+      <div class="panel-header">
+        <h2>Collections</h2>
+        <p>Collections distribute modules, plugins, roles, and playbooks. Fully Qualified Collection Names (FQCN) like <code>ansible.builtin.copy</code> are required in modern Ansible.</p>
+      </div>
+
+      <div class="card">
+        <h3>Install &amp; Manage</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre>ansible-galaxy collection install community.general
+ansible-galaxy collection install amazon.aws:6.0.0
+ansible-galaxy collection list
+ansible-galaxy collection install -r requirements.yml</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Essential Collections for IT Automation Engineers</h3>
+        <table>
+          <thead><tr><th>Collection</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td><code>ansible.builtin</code></td><td>Core modules (shipped with ansible-core)</td></tr>
+            <tr><td><code>ansible.posix</code></td><td>sysctl, mount, authorized_key, synchronize</td></tr>
+            <tr><td><code>community.general</code></td><td>Large general-purpose module set</td></tr>
+            <tr><td><code>ansible.windows</code></td><td>Windows management modules</td></tr>
+            <tr><td><code>community.windows</code></td><td>Additional Windows modules</td></tr>
+            <tr><td><code>amazon.aws</code></td><td>AWS EC2, S3, IAM, etc.</td></tr>
+            <tr><td><code>azure.azcollection</code></td><td>Azure resources</td></tr>
+            <tr><td><code>vmware.vmware</code></td><td>vSphere management</td></tr>
+            <tr><td><code>community.vmware</code></td><td>Additional VMware modules</td></tr>
+            <tr><td><code>netbox.netbox</code></td><td>NetBox IPAM/DCIM integration</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>collections/requirements.yml</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt">---</span>
+<span class="key">collections</span>:
+  <span class="key">- name</span>: <span class="val">ansible.posix</span>
+  <span class="key">- name</span>: <span class="val">community.general</span>
+    <span class="key">version</span>: <span class="val">">=8.0.0"</span>
+  <span class="key">- name</span>: <span class="val">amazon.aws</span>
+    <span class="key">source</span>: <span class="val">https://galaxy.ansible.com</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTROLLER -->
+    <section id="controller" class="tab-panel">
+      <div class="panel-header">
+        <h2>Ansible Automation Platform / Controller</h2>
+        <p>Scale Ansible beyond CLI — RBAC, scheduling, credential injection, job templates, workflows, and audit logging. Controller is the supported enterprise product (AWX is the upstream open-source project).</p>
+      </div>
+
+      <div class="diagram">Developer pushes to Git
+        │
+        ▼
+┌──────────────────┐     ┌─────────────────────┐
+│  Project (Git)   │────►│  Job Template         │
+│  playbooks repo  │     │  - Inventory          │
+└──────────────────┘     │  - Playbook           │
+                         │  - Credentials        │
+                         │  - Execution Env      │
+                         └──────────┬──────────────┘
+                                    │
+                         Manual run / Schedule / Webhook / Workflow
+                                    │
+                                    ▼
+                         Managed Hosts (via SSH/WinRM)</div>
+
+      <div class="card">
+        <h3>Controller Core Objects</h3>
+        <table>
+          <thead><tr><th>Object</th><th>CLI Equivalent</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Organization</strong></td><td>—</td><td>Top-level tenant / business unit</td></tr>
+            <tr><td><strong>Inventory</strong></td><td><code>-i</code></td><td>Hosts and groups (can sync from cloud)</td></tr>
+            <tr><td><strong>Project</strong></td><td>playbook path</td><td>Git repo containing playbooks/roles</td></tr>
+            <tr><td><strong>Credential</strong></td><td><code>--vault-pass</code>, SSH keys</td><td>Machine, cloud, vault, SCM credentials</td></tr>
+            <tr><td><strong>Job Template</strong></td><td><code>ansible-playbook</code></td><td>Defined run: inventory + project + playbook + creds</td></tr>
+            <tr><td><strong>Workflow Job Template</strong></td><td>—</td><td>Chain multiple job templates with conditions</td></tr>
+            <tr><td><strong>Execution Environment</strong></td><td>local ansible install</td><td>Container with ansible-core + collections</td></tr>
+            <tr><td><strong>Instance Group</strong></td><td>—</td><td>Isolate execution to specific capacity</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Typical Controller Workflow Setup</h3>
+        <ol class="steps">
+          <li><strong>Create Organization</strong> — e.g., "Infrastructure Team"</li>
+          <li><strong>Add Credential</strong> — Machine credential (SSH key) + Vault credential + SCM (Git token)</li>
+          <li><strong>Create Project</strong> — Point to Git repo, set update on launch</li>
+          <li><strong>Create Inventory</strong> — Static, constructed, or sourced from VMware/AWS</li>
+          <li><strong>Create Execution Environment</strong> — Custom EE image with your collections</li>
+          <li><strong>Create Job Template</strong> — Bind inventory + project + playbook + credentials + EE</li>
+          <li><strong>Assign RBAC</strong> — Teams get execute/admin on job templates</li>
+          <li><strong>Run or Schedule</strong> — Manual launch, cron schedule, or survey prompts</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <h3>Job Template Survey (Extra Variables)</h3>
+        <p style="color:var(--text-secondary);margin-bottom:0.75rem;">Surveys prompt operators at launch time — useful for patch windows, target environments, or maintenance modes.</p>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># Survey variable: patch_category (multiple choice: security, bugfix, all)</span>
+<span class="cmt"># Survey variable: reboot_after (boolean)</span>
+<span class="cmt"># Passed to playbook as extra vars automatically</span>
+
+<span class="kw">- name</span>: <span class="val">Apply patches</span>
+  <span class="kw">ansible.builtin.dnf</span>:
+    <span class="key">name</span>: <span class="val">"*"</span>
+    <span class="key">state</span>: <span class="val">latest</span>
+    <span class="key">security</span>: <span class="val">"{{ patch_category == 'security' }}"</span>
+  <span class="kw">when</span>: <span class="val">patch_category != 'none'</span></pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>AWX (Open Source)</h3>
+        <p style="color:var(--text-secondary);">AWX provides the same UI/API concepts as Controller. Deploy via Docker Compose or Kubernetes (AWX Operator). Great for lab learning before enterprise Controller.</p>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt"># Quick AWX install via awx-operator on Kubernetes</span>
+git clone https://github.com/ansible/awx-operator.git
+<span class="cmt"># Follow operator docs for your cluster</span>
+
+<span class="cmt"># AWX CLI (manage from terminal)</span>
+pip install awxkit
+awx login --conf.host https://awx.example.com --conf.username admin
+awx job_templates list
+awx job_templates launch 42 --monitor</pre>
+        </div>
+      </div>
+
+      <div class="concept-box success">
+        <strong>Example Controller Project</strong>
+        See <code>examples/controller-project/</code> for a Git-ready layout designed to be imported as a Controller Project.
+      </div>
+    </section>
+
+    <!-- EXECUTION ENVIRONMENTS -->
+    <section id="execution" class="tab-panel">
+      <div class="panel-header">
+        <h2>Execution Environments</h2>
+        <p>EEs are container images that bundle ansible-core, Python deps, and collections — ensuring consistent runs in Controller, AWX, and CI/CD.</p>
+      </div>
+
+      <div class="card">
+        <h3>Build an EE with ansible-builder</h3>
+        <div class="code-block">
+          <span class="code-label">execution-environment.yml</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="cmt">---</span>
+<span class="key">version</span>: <span class="val">3</span>
+<span class="key">images</span>:
+  <span class="key">base_image</span>:
+    <span class="key">name</span>: <span class="val">quay.io/centos/centos:stream9</span>
+<span class="key">dependencies</span>:
+  <span class="key">galaxy</span>: <span class="val">requirements.yml</span>
+  <span class="key">python</span>: <span class="val">requirements.txt</span>
+  <span class="key">system</span>: <span class="val">bindep.txt</span>
+<span class="key">additional_build_steps</span>:
+  <span class="key">prepend_final</span>: |
+    <span class="val">RUN dnf install -y openssh-clients && dnf clean all</span></pre>
+        </div>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre>pip install ansible-builder
+ansible-builder build -t my-org/infra-ee:latest -f execution-environment.yml
+podman push my-org/infra-ee:latest</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>ansible-lint in CI</h3>
+        <div class="code-block">
+          <span class="code-label">.github/workflows/ansible-lint.yml</span>
+          <button class="copy-btn">Copy</button>
+          <pre><span class="key">name</span>: <span class="val">Ansible Lint</span>
+<span class="key">on</span>: [<span class="val">push</span>, <span class="val">pull_request</span>]
+<span class="key">jobs</span>:
+  <span class="key">lint</span>:
+    <span class="key">runs-on</span>: <span class="val">ubuntu-latest</span>
+    <span class="key">steps</span>:
+      <span class="key">- uses</span>: <span class="val">actions/checkout@v4</span>
+      <span class="key">- run</span>: <span class="val">pip install ansible-lint ansible-core</span>
+      <span class="key">- run</span>: <span class="val">ansible-galaxy collection install -r requirements.yml</span>
+      <span class="key">- run</span>: <span class="val">ansible-lint</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- BEST PRACTICES -->
+    <section id="best-practices" class="tab-panel">
+      <div class="panel-header">
+        <h2>Best Practices</h2>
+        <p>Patterns used by mature automation teams — apply these from day one.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Project Structure</h3>
+          <ul style="padding-left:1.25rem;color:var(--text-secondary);font-size:0.9rem;">
+            <li>One Git repo per domain (web, db, windows, network)</li>
+            <li><code>inventories/</code> per environment (dev/staging/prod)</li>
+            <li>Never put secrets in plain text — use Vault</li>
+            <li>Pin collection versions in <code>requirements.yml</code></li>
+            <li>Use FQCN for all modules (<code>ansible.builtin.copy</code>)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Task Writing</h3>
+          <ul style="padding-left:1.25rem;color:var(--text-secondary);font-size:0.9rem;">
+            <li>Every task needs a descriptive <code>name:</code></li>
+            <li>Prefer modules over shell/command</li>
+            <li>Use tags for partial runs (<code>--tags</code>)</li>
+            <li>Use <code>--check --diff</code> before production runs</li>
+            <li>Set <code>changed_when: false</code> on read-only commands</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Operations</h3>
+          <ul style="padding-left:1.25rem;color:var(--text-secondary);font-size:0.9rem;">
+            <li>Test in dev inventory first, then staging, then prod</li>
+            <li>Use <code>serial:</code> or <code>max_fail_percentage</code> for rolling updates</li>
+            <li>Enable fact caching for large inventories</li>
+            <li>Log to Controller — avoid running ad-hoc in prod from laptops</li>
+            <li>Document survey vars and extra vars in role READMEs</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Security</h3>
+          <ul style="padding-left:1.25rem;color:var(--text-secondary);font-size:0.9rem;">
+            <li>Dedicated service account per environment</li>
+            <li>Least-privilege sudo (not NOPASSWD: ALL in prod)</li>
+            <li>Rotate vault passwords via Controller credentials</li>
+            <li>Sign commits, protect main branch, require PR reviews</li>
+            <li>Scan with <code>ansible-lint</code> and <code>ansible-test</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Rolling Updates</h3>
+        <div class="code-block">
+          <button class="copy-btn">Copy</button>
+          <pre><span class="kw">- name</span>: <span class="val">Rolling web server update</span>
+  <span class="kw">hosts</span>: <span class="val">webservers</span>
+  <span class="kw">serial</span>: <span class="val">"25%"</span>          <span class="cmt"># or serial: 1 for one-at-a-time</span>
+  <span class="kw">max_fail_percentage</span>: <span class="val">0</span>
+  <span class="kw">order</span>: <span class="val">sorted</span>            <span class="cmt"># alphabetical; or reverse_sorted, shuffle</span>
+  <span class="kw">tasks</span>:
+    <span class="val">...</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXAMPLES -->
+    <section id="examples" class="tab-panel">
+      <div class="panel-header">
+        <h2>Example Projects</h2>
+        <p>Ready-to-study Ansible projects in the <code>examples/</code> folder. Copy, modify, and run against your lab VMs.</p>
+      </div>
+
+      <div class="card">
+        <h3>1. Web Server Project</h3>
+        <p style="color:var(--text-secondary);margin-bottom:0.75rem;"><code>examples/webserver-project/</code> — Full role-based nginx deployment with inventory, group_vars, host_vars, templates, and handlers.</p>
+        <div class="file-tree">
+<span class="dir">webserver-project/</span>
+├── <span class="file">ansible.cfg</span>
+├── <span class="file highlight">site.yml</span>
+├── <span class="dir">inventories/production/</span>
+│   ├── <span class="file">hosts.yml</span>
+│   ├── <span class="dir">group_vars/</span>
+│   └── <span class="dir">host_vars/</span>
+└── <span class="dir">roles/</span>
+    ├── <span class="dir">common/</span>
+    └── <span class="dir">nginx/</span>
+        </div>
+        <p style="margin-top:0.75rem;font-size:0.9rem;"><code>cd examples/webserver-project && ansible-playbook site.yml --check</code></p>
+      </div>
+
+      <div class="card">
+        <h3>2. Patch Management Project</h3>
+        <p style="color:var(--text-secondary);margin-bottom:0.75rem;"><code>examples/patch-management/</code> — Cross-platform patching with conditionals, reboot handling, and reporting.</p>
+        <div class="file-tree">
+<span class="dir">patch-management/</span>
+├── <span class="file">ansible.cfg</span>
+├── <span class="file highlight">patch-servers.yml</span>
+├── <span class="dir">inventories/</span>
+└── <span class="dir">group_vars/</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>3. Controller-Ready Project</h3>
+        <p style="color:var(--text-secondary);margin-bottom:0.75rem;"><code>examples/controller-project/</code> — Layout optimized for Ansible Automation Platform with separate playbooks per job template, requirements.yml, and execution-environment.yml.</p>
+        <div class="file-tree">
+<span class="dir">controller-project/</span>
+├── <span class="file">requirements.yml</span>
+├── <span class="file">execution-environment.yml</span>
+├── <span class="dir">playbooks/</span>
+│   ├── <span class="file">baseline.yml</span>
+│   ├── <span class="file">deploy-nginx.yml</span>
+│   └── <span class="file">patch-linux.yml</span>
+├── <span class="dir">inventories/</span>
+└── <span class="dir">roles/</span> → symlink or copy from webserver-project
+        </div>
+      </div>
+
+      <div class="concept-box info">
+        <strong>Lab Tip</strong>
+        Use Vagrant or Multipass to spin up 2–3 Linux VMs, update the inventory with their IPs, and run these playbooks with <code>--check</code> first.
+      </div>
+    </section>
+
+    <!-- CHEATSHEET -->
+    <section id="cheatsheet" class="tab-panel">
+      <div class="panel-header">
+        <h2>Cheat Sheet</h2>
+        <p>Quick reference for daily Ansible work.</p>
+      </div>
+
+      <div class="card">
+        <h3>CLI Commands</h3>
+        <table>
+          <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>ansible &lt;pattern&gt; -m ping</code></td><td>Test connectivity</td></tr>
+            <tr><td><code>ansible-playbook site.yml</code></td><td>Run playbook</td></tr>
+            <tr><td><code>ansible-playbook site.yml --check --diff</code></td><td>Dry run</td></tr>
+            <tr><td><code>ansible-playbook site.yml --limit web01</code></td><td>Limit hosts</td></tr>
+            <tr><td><code>ansible-playbook site.yml --tags nginx</code></td><td>Run tagged tasks only</td></tr>
+            <tr><td><code>ansible-playbook site.yml -e "@vars.json"</code></td><td>Extra vars from file</td></tr>
+            <tr><td><code>ansible-inventory --graph</code></td><td>Visualize inventory</td></tr>
+            <tr><td><code>ansible-doc ansible.builtin.copy</code></td><td>Module documentation</td></tr>
+            <tr><td><code>ansible-vault encrypt file.yml</code></td><td>Encrypt secrets</td></tr>
+            <tr><td><code>ansible-galaxy collection install -r requirements.yml</code></td><td>Install collections</td></tr>
+            <tr><td><code>ansible-lint</code></td><td>Lint playbooks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Common Module Quick Reference</h3>
+        <table>
+          <thead><tr><th>Module</th><th>Key Parameters</th></tr></thead>
+          <tbody>
+            <tr><td><code>copy</code></td><td>src, dest, owner, mode</td></tr>
+            <tr><td><code>template</code></td><td>src (.j2), dest, validate</td></tr>
+            <tr><td><code>file</code></td><td>path, state (file/directory/absent/link), mode</td></tr>
+            <tr><td><code>package</code></td><td>name, state (present/absent/latest)</td></tr>
+            <tr><td><code>service</code></td><td>name, state (started/stopped/restarted/reloaded), enabled</td></tr>
+            <tr><td><code>user</code></td><td>name, groups, shell, state</td></tr>
+            <tr><td><code>lineinfile</code></td><td>path, regexp, line, state</td></tr>
+            <tr><td><code>uri</code></td><td>url, method, status_code, body</td></tr>
+            <tr><td><code>debug</code></td><td>msg, var</td></tr>
+            <tr><td><code>import_role / include_role</code></td><td>name, tasks_from</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Task Result Colors</h3>
+        <div class="grid-2">
+          <div><span class="tag red">changed</span> Task made a modification</div>
+          <div><span class="tag">ok</span> Already in desired state</div>
+          <div><span class="tag">failed</span> Task errored</div>
+          <div><span class="tag">skipped</span> when: condition not met</div>
+          <div><span class="tag">unreachable</span> Host connection failed</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESOURCES -->
+    <section id="resources" class="tab-panel">
+      <div class="panel-header">
+        <h2>Resources &amp; Links</h2>
+        <p>Official documentation, training, community, and tools to continue your Ansible journey.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Official Documentation</h3>
+          <ul class="link-list">
+            <li><a href="https://docs.ansible.com/" target="_blank" rel="noopener">Ansible Documentation Portal</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/getting_started/index.html" target="_blank" rel="noopener">Getting Started Guide</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/playbook_guide/index.html" target="_blank" rel="noopener">Playbook Guide</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/inventory_guide/index.html" target="_blank" rel="noopener">Inventory Guide</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/collections/index.html" target="_blank" rel="noopener">Collection Index (all modules)</a></li>
+            <li><a href="https://docs.ansible.com/automation-controller/latest/html/userguide/index.html" target="_blank" rel="noopener">Automation Controller User Guide</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/os_guide/windows_setup.html" target="_blank" rel="noopener">Windows Setup Guide</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Training &amp; Certification</h3>
+          <ul class="link-list">
+            <li><a href="https://www.redhat.com/en/services/training/d007-ansible-rhce" target="_blank" rel="noopener">Red Hat Certified Engineer (RHCE) — Ansible</a></li>
+            <li><a href="https://www.ansible.com/products/training-and-certification" target="_blank" rel="noopener">Red Hat Ansible Training Courses</a></li>
+            <li><a href="https://github.com/rhasspy/ansible-inventory-vault" target="_blank" rel="noopener">Interactive Ansible Workshops (GitHub)</a></li>
+            <li><a href="https://labs.demoredhat.com/" target="_blank" rel="noopener">Red Hat Demo Platform / Labs</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Community &amp; Galaxy</h3>
+          <ul class="link-list">
+            <li><a href="https://galaxy.ansible.com/" target="_blank" rel="noopener">Ansible Galaxy — Roles &amp; Collections</a></li>
+            <li><a href="https://github.com/ansible/ansible" target="_blank" rel="noopener">ansible/ansible (GitHub)</a></li>
+            <li><a href="https://github.com/ansible/awx" target="_blank" rel="noopener">AWX Project (GitHub)</a></li>
+            <li><a href="https://github.com/ansible/awx-operator" target="_blank" rel="noopener">AWX Operator (Kubernetes)</a></li>
+            <li><a href="https://forum.ansible.com/" target="_blank" rel="noopener">Ansible Community Forum</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/community/other_tools_and_programs.html" target="_blank" rel="noopener">ansible-lint, ansible-builder, ansible-navigator</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Popular Community Roles (Study These)</h3>
+          <ul class="link-list">
+            <li><a href="https://galaxy.ansible.com/geerlingguy" target="_blank" rel="noopener">geerlingguy — nginx, docker, security, mysql</a></li>
+            <li><a href="https://galaxy.ansible.com/dev-sec" target="_blank" rel="noopener">dev-sec — os-hardening, ssh-hardening</a></li>
+            <li><a href="https://galaxy.ansible.com/ansible-lockdown" target="_blank" rel="noopener">ansible-lockdown — CIS/STIG baselines</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Cloud &amp; Infrastructure Integrations</h3>
+          <ul class="link-list">
+            <li><a href="https://docs.ansible.com/ansible/latest/collections/amazon/aws/index.html" target="_blank" rel="noopener">amazon.aws Collection Docs</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/collections/azure/azcollection/index.html" target="_blank" rel="noopener">azure.azcollection Docs</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/collections/vmware/vmware/index.html" target="_blank" rel="noopener">vmware.vmware Collection Docs</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/collections/netbox/netbox/index.html" target="_blank" rel="noopener">netbox.netbox Collection Docs</a></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Books &amp; Deep Dives</h3>
+          <ul class="link-list">
+            <li><a href="https://www.ansible.com/resources/ebooks/ansible-up-and-running" target="_blank" rel="noopener">Ansible: Up and Running (O'Reilly) — Free eBook</a></li>
+            <li><a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html" target="_blank" rel="noopener">YAML Syntax Reference</a></li>
+            <li><a href="https://jinja.palletsprojects.com/en/latest/templates/" target="_blank" rel="noopener">Jinja2 Template Documentation</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Ansible Learning Lab · Open <code>index.html</code> in any browser · Example projects in <code>examples/</code>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
