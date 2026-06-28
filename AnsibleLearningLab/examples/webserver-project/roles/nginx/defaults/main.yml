@@ -1,6 +1,0 @@
----
-# Lowest-precedence defaults — override in group_vars or host_vars
-nginx_port: 80
-nginx_worker_processes: 2
-nginx_worker_connections: 1024
-nginx_user: nginx
