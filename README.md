@@ -4,11 +4,7 @@ A self-contained, tabbed local website that teaches Ansible from the ground up â
 
 ## Open the Website
 
-No server required. Double-click or open in any browser:
-
-```bash
-open "/Users/brandonstevens/Cursor Projects/AnsibleLearningLab/index.html"
-```
+No server required. Double-click or open index.html file in any browser
 
 Or on Linux:
 
